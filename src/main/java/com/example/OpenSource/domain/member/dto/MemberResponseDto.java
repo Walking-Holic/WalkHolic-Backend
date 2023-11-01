@@ -3,6 +3,7 @@ package com.example.OpenSource.domain.member.dto;
 
 import com.example.OpenSource.domain.member.domain.Authority;
 import com.example.OpenSource.domain.member.domain.Member;
+import com.example.OpenSource.domain.member.domain.Rank;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,19 @@ public class MemberResponseDto {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
-    public static MemberResponseDto of(Member member){
+    @Enumerated(EnumType.STRING)
+    private Rank rank;
+
+    private String profile_image;
+
+    public static MemberResponseDto of(Member member) {
         return new MemberResponseDto(
                 member.getEmail(),
                 member.getNickname(),
                 member.getName(),
-                member.getAuthority()
+                member.getAuthority(),
+                member.getRank(),
+                member.getImage().getImageName()
         );
     }
 }

@@ -1,5 +1,11 @@
 package com.example.OpenSource.domain.auth.service;
 
+import static com.example.OpenSource.global.error.ErrorCode.DUPLICATE_RESOURCE;
+import static com.example.OpenSource.global.error.ErrorCode.INVALID_REFRESH_TOKEN;
+import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_REFRESH_TOKEN;
+import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_USERNAME_OR_PASSWORD;
+import static com.example.OpenSource.global.error.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
+
 import com.example.OpenSource.domain.auth.domain.RefreshToken;
 import com.example.OpenSource.domain.auth.dto.LoginRequestDto;
 import com.example.OpenSource.domain.auth.dto.RegisterRequestDto;
@@ -7,6 +13,8 @@ import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.dto.TokenRequestDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
 import com.example.OpenSource.domain.auth.repository.RefreshTokenRepository;
+import com.example.OpenSource.domain.image.domain.Image;
+import com.example.OpenSource.domain.image.repository.ImageRepository;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
@@ -18,8 +26,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.OpenSource.global.error.ErrorCode.*;
-
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -28,23 +34,30 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ImageRepository imageRepository;
 
     @Transactional
-    public boolean register(RegisterRequestDto registerRequestDto){
-        if(memberRepository.existsByEmail(registerRequestDto.getEmail())){
+    public boolean register(RegisterRequestDto registerRequestDto) {
+        if (memberRepository.existsByEmail(registerRequestDto.getEmail())) {
             throw new CustomException(DUPLICATE_RESOURCE);
         }
 
         Member member = registerRequestDto.toMember(passwordEncoder);
+        Image image = Image.builder()
+                .imageName("default.png")
+                .member(member)
+                .build();
+
         memberRepository.save(member);
+        imageRepository.save(image);
         return true;
     }
 
     @Transactional
-    public TokenDto login(LoginRequestDto loginRequestDto){
+    public TokenDto login(LoginRequestDto loginRequestDto) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginRequestDto.toAuthentication();
-        try{
+        try {
             // 2. 실제로 검증 (비밀번호 체크)
             // authenticate 메서드가 실행이 될 때 CustomUserDetailService 에서 만든 loadUserByUsername 메서드 실행
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -70,9 +83,9 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDto reissue(TokenRequestDto tokenRequestDto){
+    public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         // 1. Refresh Token 만료 여부 검증
-        if(!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())){
+        if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new CustomException(INVALID_REFRESH_TOKEN);
         }
 
@@ -84,7 +97,7 @@ public class AuthService {
                 .orElseThrow(() -> new CustomException(REFRESH_TOKEN_NOT_FOUND));
 
         // 4. Refresh Token 일치하는지 검사
-        if(!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())){
+        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
             throw new CustomException(MISMATCH_REFRESH_TOKEN);
         }
 
