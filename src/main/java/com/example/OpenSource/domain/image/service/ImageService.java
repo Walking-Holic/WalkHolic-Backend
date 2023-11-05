@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.image.service;
 
+import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 
 import com.example.OpenSource.domain.image.domain.Image;
@@ -27,6 +28,9 @@ public class ImageService {
     private String uploadFolder;
 
     public void uploadImage(MultipartFile file, Long memberId) {
+        if (file.isEmpty()) {
+            throw new CustomException(IMAGE_NOT_FOUND);
+        }
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         UUID uuid = UUID.randomUUID();
