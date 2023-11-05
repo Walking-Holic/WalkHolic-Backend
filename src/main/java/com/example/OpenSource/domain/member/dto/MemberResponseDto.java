@@ -26,6 +26,8 @@ public class MemberResponseDto {
     @Enumerated(EnumType.STRING)
     private Rank rank;
 
+    private int walk;
+
     private String profile_image;
 
     public static MemberResponseDto of(Member member) {
@@ -35,6 +37,7 @@ public class MemberResponseDto {
                 member.getName(),
                 member.getAuthority(),
                 member.getRank(),
+                member.getWalk(),
                 member.getImage().getImageName()
         );
     }
