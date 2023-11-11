@@ -7,6 +7,7 @@ import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
 import com.example.OpenSource.domain.member.domain.Authority;
 import com.example.OpenSource.domain.member.domain.Member;
+import com.example.OpenSource.domain.member.domain.Rank;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class OAuthLoginService {
     private final TokenProvider tokenProvider;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
-    public TokenDto login(OAuthLoginParams params){
+    public TokenDto login(OAuthLoginParams params) {
         // 소셜 OAuth 인증 후 프로필 정보 가져오기
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
         Long memberId = findOrCreateMember(oAuthInfoResponse);
@@ -38,6 +39,7 @@ public class OAuthLoginService {
                 .nickname(oAuthInfoResponse.getNickname())
                 .authority(Authority.ROLE_USER)
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
+                .rank(Rank.BRONZE)
                 .build();
 
         return memberRepository.save(member).getId();
