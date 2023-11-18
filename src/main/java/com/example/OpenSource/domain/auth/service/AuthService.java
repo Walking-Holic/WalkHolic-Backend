@@ -13,18 +13,24 @@ import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.dto.TokenRequestDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
 import com.example.OpenSource.domain.auth.repository.RefreshTokenRepository;
-import com.example.OpenSource.domain.image.domain.Image;
-import com.example.OpenSource.domain.image.repository.ImageRepository;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Blob;
+import java.sql.SQLException;
+import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -34,23 +40,43 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final ImageRepository imageRepository;
 
     @Transactional
-    public boolean register(RegisterRequestDto registerRequestDto) {
+    public boolean register(RegisterRequestDto registerRequestDto, MultipartFile profileImage) {
         if (memberRepository.existsByEmail(registerRequestDto.getEmail())) {
             throw new CustomException(DUPLICATE_RESOURCE);
         }
 
-        Member member = registerRequestDto.toMember(passwordEncoder);
-        Image image = Image.builder()
-                .imageName("default.png")
-                .member(member)
-                .build();
+        Member newMember = registerRequestDto.toMember(passwordEncoder);
 
-        memberRepository.save(member);
-        imageRepository.save(image);
+        if (profileImage != null) {
+            saveProfileImageFromDto(profileImage, newMember);
+        } else { // profileImage가 null인 경우에 기본 이미지 등록 로직 수행
+            newMember.setProfileImage(getDefaultProfileImage());
+        }
+
+        memberRepository.save(newMember);
         return true;
+    }
+
+    private void saveProfileImageFromDto(MultipartFile profileImage, Member newMember) {
+        try {
+            Blob blob = new SerialBlob(profileImage.getBytes());
+            newMember.setProfileImage(blob);
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 기본 이미지 설정
+    public static Blob getDefaultProfileImage() {
+        try {
+            Resource resource = new ClassPathResource("webapp/img/default.png");
+            byte[] defaultImageData = Files.readAllBytes(resource.getFile().toPath());
+            return new SerialBlob(defaultImageData);
+        } catch (IOException | SQLException e) {
+            throw new RuntimeException("Failed to load default profile image.", e);
+        }
     }
 
     @Transactional

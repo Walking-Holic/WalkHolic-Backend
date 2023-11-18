@@ -1,19 +1,22 @@
 package com.example.OpenSource.domain.member.domain;
 
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthProvider;
-import com.example.OpenSource.domain.image.domain.Image;
+import com.example.OpenSource.domain.path.domain.Path;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import java.sql.Blob;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,8 +53,11 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Rank rank;
 
-    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
-    private Image image;
+    @Lob
+    private Blob profileImage;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Path> paths;
 
     @Builder
     public Member(String email, String password, String nickname, String name, int walk, Authority authority,
@@ -64,5 +70,9 @@ public class Member {
         this.authority = authority;
         this.oAuthProvider = oAuthProvider;
         this.rank = rank;
+    }
+
+    public void setProfileImage(Blob imageFile) {
+        this.profileImage = imageFile;
     }
 }
