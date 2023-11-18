@@ -22,8 +22,8 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -49,7 +50,7 @@ public class AuthService {
 
         Member newMember = registerRequestDto.toMember(passwordEncoder);
 
-        if (profileImage != null) {
+        if (profileImage != null && !profileImage.isEmpty()) {
             saveProfileImageFromDto(profileImage, newMember);
         } else { // profileImage가 null인 경우에 기본 이미지 등록 로직 수행
             newMember.setProfileImage(getDefaultProfileImage());
@@ -71,7 +72,7 @@ public class AuthService {
     // 기본 이미지 설정
     public static Blob getDefaultProfileImage() {
         try {
-            Resource resource = new ClassPathResource("webapp/img/default.png");
+            ClassPathResource resource = new ClassPathResource("webapp/img/default.png");
             byte[] defaultImageData = Files.readAllBytes(resource.getFile().toPath());
             return new SerialBlob(defaultImageData);
         } catch (IOException | SQLException e) {
