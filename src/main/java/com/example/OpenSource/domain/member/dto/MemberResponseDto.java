@@ -28,7 +28,7 @@ public class MemberResponseDto {
 
     private int walk;
 
-    private String profile_image;
+    //private String profile_image;
 
     public static MemberResponseDto of(Member member) {
         return new MemberResponseDto(
@@ -37,8 +37,7 @@ public class MemberResponseDto {
                 member.getName(),
                 member.getAuthority(),
                 member.getRank(),
-                member.getWalk(),
-                member.getImage().getImageName()
+                member.getWalk()
         );
     }
 }
