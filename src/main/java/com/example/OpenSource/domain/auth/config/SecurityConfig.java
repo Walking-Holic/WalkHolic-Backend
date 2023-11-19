@@ -1,5 +1,7 @@
 package com.example.OpenSource.domain.auth.config;
 
+import static com.example.OpenSource.domain.member.domain.Authority.ROLE_ADMIN;
+
 import com.example.OpenSource.domain.auth.exception.JwtAccessDeniedHandler;
 import com.example.OpenSource.domain.auth.exception.JwtAuthenticationEntryPoint;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
@@ -15,8 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.example.OpenSource.domain.member.domain.Authority.ROLE_ADMIN;
-
 
 @Configuration
 @RequiredArgsConstructor
@@ -27,12 +27,12 @@ public class SecurityConfig {
     private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // CSRF 설정 Disable
         http.csrf(AbstractHttpConfigurer::disable)
 
@@ -49,12 +49,12 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/test").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasAnyAuthority(String.valueOf(ROLE_ADMIN))
-                        .anyRequest().authenticated()) //나머지 API는 모두 인증 필요
-
+                .authorizeHttpRequests(
+                        authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/test/**").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasAnyAuthority(String.valueOf(ROLE_ADMIN))
+                                .anyRequest().authenticated()) //나머지 API는 모두 인증 필요
 
                 .apply(new JwtSecurityConfig(tokenProvider, jwtExceptionFilter));
 

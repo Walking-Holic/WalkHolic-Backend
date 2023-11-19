@@ -1,12 +1,12 @@
 package com.example.OpenSource.domain.auth.service;
 
+import static com.example.OpenSource.domain.auth.service.AuthService.getDefaultProfileImage;
+
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthInfoResponse;
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthLoginParams;
 import com.example.OpenSource.domain.auth.domain.oauth.RequestOAuthInfoService;
 import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
-import com.example.OpenSource.domain.image.domain.Image;
-import com.example.OpenSource.domain.image.repository.ImageRepository;
 import com.example.OpenSource.domain.member.domain.Authority;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.domain.Rank;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthLoginService {
     private final MemberRepository memberRepository;
-    private final ImageRepository imageRepository;
     private final TokenProvider tokenProvider;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
@@ -46,14 +45,8 @@ public class OAuthLoginService {
                 .rank(Rank.BRONZE)
                 .build();
 
-        Image image = Image.builder()
-                .imageName("default.png")
-                .member(member)
-                .build();
+        member.setProfileImage(getDefaultProfileImage());
 
-        Long temp = memberRepository.save(member).getId();
-        imageRepository.save(image);
-
-        return temp;
+        return memberRepository.save(member).getId();
     }
 }

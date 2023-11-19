@@ -10,11 +10,14 @@ import com.example.OpenSource.domain.auth.service.AuthService;
 import com.example.OpenSource.domain.auth.service.OAuthLoginService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,28 +26,30 @@ public class AuthController {
     private final AuthService authService;
     private final OAuthLoginService oAuthLoginService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Boolean> register(@RequestBody @Valid RegisterRequestDto registerRequestDto){
-        return ResponseEntity.ok(authService.register(registerRequestDto));
+    @PostMapping(value = "/register", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Boolean> register(@Valid @RequestPart(value = "dto") RegisterRequestDto registerRequestDto,
+                                            @RequestPart(required = false) MultipartFile profileImage) {
+        return ResponseEntity.ok(authService.register(registerRequestDto, profileImage));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto){
+    public ResponseEntity<TokenDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto){
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(authService.reissue(tokenRequestDto));
     }
 
     @PostMapping("/kakao")
-    public ResponseEntity<TokenDto> loginKakao(@RequestBody KakaoLoginParams params){
+    public ResponseEntity<TokenDto> loginKakao(@RequestBody KakaoLoginParams params) {
         return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
     @PostMapping("/naver")
-    public ResponseEntity<TokenDto> loginNaver(@RequestBody NaverLoginParams params){
+    public ResponseEntity<TokenDto> loginNaver(@RequestBody NaverLoginParams params) {
         return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
