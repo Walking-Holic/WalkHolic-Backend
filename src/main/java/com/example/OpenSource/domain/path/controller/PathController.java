@@ -3,6 +3,7 @@ package com.example.OpenSource.domain.path.controller;
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.path.dto.PathRequestDto;
+import com.example.OpenSource.domain.path.dto.PathResponseDto;
 import com.example.OpenSource.domain.path.service.PathService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -32,5 +34,11 @@ public class PathController {
     @GetMapping(value = "")
     public List<Path> getAllPaths() {
         return pathService.getAllPaths();
+    }
+
+    @GetMapping(value = "/{pathId}")
+    public ResponseEntity<PathResponseDto> getPathById(@PathVariable Long pathId) {
+        PathResponseDto pathResponseDto = pathService.getPathResponseById(pathId);
+        return ResponseEntity.ok(pathResponseDto);
     }
 }
