@@ -53,6 +53,7 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/test/**").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/api/path").permitAll()
                                 .requestMatchers("/api/admin/**").hasAnyAuthority(String.valueOf(ROLE_ADMIN))
                                 .anyRequest().authenticated()) //나머지 API는 모두 인증 필요
 

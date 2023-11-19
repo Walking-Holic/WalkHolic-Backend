@@ -72,4 +72,7 @@ public class PathService {
                 .build();
     }
 
+    public List<Path> getAllPaths() {
+        return pathRepository.findAll();
+    }
 }

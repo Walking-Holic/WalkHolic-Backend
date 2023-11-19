@@ -1,12 +1,15 @@
 package com.example.OpenSource.domain.path.controller;
 
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
+import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.path.dto.PathRequestDto;
 import com.example.OpenSource.domain.path.service.PathService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -26,5 +29,8 @@ public class PathController {
         return ResponseEntity.ok(pathService.addPath(pathRequestDto, SecurityUtil.getCurrentMemberId(), pathImage));
     }
 
-
+    @GetMapping(value = "")
+    public List<Path> getAllPaths() {
+        return pathService.getAllPaths();
+    }
 }
