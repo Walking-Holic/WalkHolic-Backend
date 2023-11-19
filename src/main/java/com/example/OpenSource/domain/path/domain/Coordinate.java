@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.path.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,10 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "coordinates")
+@Table(name = "coordinate")
 public class Coordinate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "coordinate_id", updatable = false)
     private Long id;
 
     @ManyToOne
