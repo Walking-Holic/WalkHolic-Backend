@@ -56,7 +56,6 @@ public class Path {
 
     @ManyToOne()
     @JoinColumn(name = "member_id")
-    @JsonIgnore // 무한 루프 방지
     private Member member;
 
     @Lob

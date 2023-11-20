@@ -63,6 +63,7 @@ public class Member {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "member_id")
+    @JsonIgnore // 무한 루프 방지
     private List<Path> paths = new ArrayList<>();
 
     @Builder
