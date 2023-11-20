@@ -1,11 +1,14 @@
 package com.example.OpenSource.domain.path.domain;
 
 import com.example.OpenSource.domain.member.domain.Member;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,10 +29,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "paths")
+@Table(name = "path")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Path {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "path_id", updatable = false)
     private Long id;
 
     private String title;
@@ -49,11 +54,13 @@ public class Path {
     @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Coordinate> coordinates;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @ManyToOne()
+    @JoinColumn(name = "member_id")
+    @JsonIgnore // 무한 루프 방지
     private Member member;
 
     @Lob
+    @JsonIgnore
     private Blob pathImage;
 
     public void setCoordinates(List<Coordinate> savedCoordinates) {

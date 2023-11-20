@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.path.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
+import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
 
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
@@ -9,6 +10,7 @@ import com.example.OpenSource.domain.path.domain.Coordinate;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.path.dto.CoordinateDto;
 import com.example.OpenSource.domain.path.dto.PathRequestDto;
+import com.example.OpenSource.domain.path.dto.PathResponseDto;
 import com.example.OpenSource.domain.path.repository.CoordinateRepository;
 import com.example.OpenSource.domain.path.repository.PathRepository;
 import com.example.OpenSource.global.error.CustomException;
@@ -72,4 +74,12 @@ public class PathService {
                 .build();
     }
 
+    public List<Path> getAllPaths() {
+        return pathRepository.findAll();
+    }
+
+    public PathResponseDto getPathResponseById(Long pathId) {
+        Path path = pathRepository.findById(pathId).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
+        return PathResponseDto.of(path);
+    }
 }

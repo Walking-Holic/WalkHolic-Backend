@@ -9,12 +9,14 @@ import jakarta.persistence.Enumerated;
 import java.sql.Blob;
 import java.sql.SQLException;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberResponseDto {
     private String email;
 
