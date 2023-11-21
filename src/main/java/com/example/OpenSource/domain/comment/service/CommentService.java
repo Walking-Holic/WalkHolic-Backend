@@ -47,8 +47,9 @@ public class CommentService {
 
     @Transactional
     public boolean delete(Long id, Long memberId) {
+        commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
         if(commentRepository.getById(id).getMember().getId() != memberId){ // 작성자와 삭제자가 일치하지 않음
-            new CustomException(MISMATCH_COMMENT_USERNAME);
+            throw new CustomException(MISMATCH_COMMENT_USERNAME);
         }
         commentRepository.deleteById(id);
         return true;
@@ -58,7 +59,7 @@ public class CommentService {
     public boolean update(CommentDto commentDto, Long memberId, Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
         if(commentRepository.getById(id).getMember().getId() != memberId){ // 작성자와 수정자가 일치하지 않음
-            new CustomException(MISMATCH_COMMENT_USERNAME);
+            throw new CustomException(MISMATCH_COMMENT_USERNAME);
         }
         comment.update(commentDto.getContents(), commentDto.getScore());
         return true;
