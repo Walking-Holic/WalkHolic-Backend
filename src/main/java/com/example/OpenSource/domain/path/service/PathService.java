@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.path.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
+import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
 
 import com.example.OpenSource.domain.comment.dto.CommentResponseDto;
@@ -23,6 +24,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +87,8 @@ public class PathService {
         List<PathAllResponseDto> pathAllDtos = new ArrayList<>();
 
         for (Path path : paths) {
-            PathAllResponseDto response = PathAllResponseDto.of(path);
+            PathAllResponseDto response = Optional.of(path).map(PathAllResponseDto::new)
+                    .orElseThrow(() -> new CustomException(MISMATCH_DTO));
             pathAllDtos.add(response);
         }
 

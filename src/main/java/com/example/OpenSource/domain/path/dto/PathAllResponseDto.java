@@ -4,31 +4,38 @@ import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.dto.MemberResponseDto;
 import com.example.OpenSource.domain.path.domain.Difficulty;
 import com.example.OpenSource.domain.path.domain.Path;
-import lombok.Builder;
+import java.sql.Blob;
+import java.sql.SQLException;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class PathAllResponseDto {
     private Long id;
     private String title;
-    private String content;
     private double totalDistance;
     private Difficulty difficulty;
     private String estimatedTime;
+    private byte[] pathImage;
     private MemberResponseDto member;
 
-    public static PathAllResponseDto of(Path path) {
+    public PathAllResponseDto(Path path) {
         Member member = path.getMember();
+        this.id = path.getId();
+        this.title = path.getTitle();
+        this.totalDistance = path.getTotalDistance();
+        this.difficulty = path.getDifficulty();
+        this.estimatedTime = path.getEstimatedTime();
+        declarePathImage(path.getPathImage());
+        this.member = MemberResponseDto.of(member);
+    }
 
-        return PathAllResponseDto.builder()
-                .id(path.getId())
-                .title(path.getTitle())
-                .content(path.getContent())
-                .totalDistance(path.getTotalDistance())
-                .difficulty(path.getDifficulty())
-                .estimatedTime(path.getEstimatedTime())
-                .member(MemberResponseDto.of(member))
-                .build();
+    public void declarePathImage(Blob pathImage) {
+        if (pathImage != null) {
+            try {
+                this.pathImage = pathImage.getBytes(1, (int) pathImage.length());
+            } catch (SQLException e) {
+                // 예외 처리
+            }
+        }
     }
 }
