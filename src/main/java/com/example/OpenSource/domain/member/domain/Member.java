@@ -1,6 +1,7 @@
 package com.example.OpenSource.domain.member.domain;
 
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthProvider;
+import com.example.OpenSource.domain.comment.entity.Comment;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -65,6 +66,9 @@ public class Member {
     @JoinColumn(name = "member_id")
     @JsonIgnore // 무한 루프 방지
     private List<Path> paths = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String nickname, String name, int walk, Authority authority,

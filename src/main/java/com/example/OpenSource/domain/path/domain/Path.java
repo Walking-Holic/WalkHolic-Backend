@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.path.domain;
 
+import com.example.OpenSource.domain.comment.entity.Comment;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,6 +19,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,16 +53,21 @@ public class Path {
     // 총 소요 시간
     private String estimatedTime;
 
-    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Coordinate> coordinates;
-
-    @ManyToOne()
-    @JoinColumn(name = "member_id")
-    private Member member;
-
+    
     @Lob
     @JsonIgnore
     private Blob pathImage;
+
+    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Coordinate> coordinates;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
 
     public void setCoordinates(List<Coordinate> savedCoordinates) {
         this.coordinates = savedCoordinates;
