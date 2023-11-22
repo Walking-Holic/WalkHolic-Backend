@@ -5,8 +5,7 @@ import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
 
-import com.example.OpenSource.domain.comment.dto.CommentResponseDto;
-import com.example.OpenSource.domain.comment.entity.Comment;
+import com.example.OpenSource.domain.comment.dto.PathCommentResponseDto;
 import com.example.OpenSource.domain.comment.repository.CommentRepository;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
@@ -101,9 +100,9 @@ public class PathService {
     public PathDetailResponseDto getPathResponseById(Long pathId) {
         Path path = pathRepository.findById(pathId).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
 
-        List<CommentResponseDto> commentDtoList = commentRepository.findByPathId(pathId)
+        List<PathCommentResponseDto> commentDtoList = commentRepository.findByPathId(pathId)
                 .stream()
-                .map(Comment::toCommentResponseDto)
+                .map(PathCommentResponseDto::new)
                 .collect(Collectors.toList());
 
         return PathDetailResponseDto.of(path, commentDtoList);
