@@ -22,11 +22,9 @@ public class CommentResponseDto {
     private int score;
 
     @NotBlank
-    private Long memberId;
-
-    @NotBlank
     private Long pathId;
-    public Comment toComment(Member member){
+
+    public Comment toComment(Member member) {
         return Comment.builder()
                 .contents(contents)
                 .score(score)
