@@ -18,6 +18,7 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(BAD_REQUEST, "INVALID INPUT VALUE"),
     MISMATCH_USERNAME_OR_PASSWORD(BAD_REQUEST, "아이디 또는 비밀번호가 일치하지 않습니다."),
     MISMATCH_COMMENT_USERNAME(BAD_REQUEST, "해당 댓글의 사용자가 아닙니다."),
+    MISMATCH_DTO(BAD_REQUEST, "dto 매핑 변수가 맞지 않음."),
 
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),

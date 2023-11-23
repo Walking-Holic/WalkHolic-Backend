@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.path.domain;
 
+import com.example.OpenSource.domain.comment.entity.Comment;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,17 +52,23 @@ public class Path {
     // 총 소요 시간
     private String estimatedTime;
 
-    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Coordinate> coordinates;
-
-    @ManyToOne()
-    @JoinColumn(name = "member_id")
-    @JsonIgnore // 무한 루프 방지
-    private Member member;
+    // 게시판의 평점의 평균
+    private double averageScore;
 
     @Lob
     @JsonIgnore
     private Blob pathImage;
+
+    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Coordinate> coordinates;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
 
     public void setCoordinates(List<Coordinate> savedCoordinates) {
         this.coordinates = savedCoordinates;
@@ -69,5 +76,22 @@ public class Path {
 
     public void setPathImage(Blob pathImage) {
         this.pathImage = pathImage;
+    }
+
+    public void setAverageScore(double averageScore) {
+        this.averageScore = averageScore;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
+        comment.setPath(this);
+    }
+
+    public void removeComments(Comment comment) {
+        comments.remove(comment);
     }
 }

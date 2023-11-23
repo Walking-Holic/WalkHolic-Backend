@@ -1,9 +1,9 @@
 package com.example.OpenSource.domain.path.controller;
 
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
-import com.example.OpenSource.domain.path.domain.Path;
+import com.example.OpenSource.domain.path.dto.PathAllResponseDto;
+import com.example.OpenSource.domain.path.dto.PathDetailResponseDto;
 import com.example.OpenSource.domain.path.dto.PathRequestDto;
-import com.example.OpenSource.domain.path.dto.PathResponseDto;
 import com.example.OpenSource.domain.path.service.PathService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PathController {
     private final PathService pathService;
 
+    // 게시판 정보 저장
     @PostMapping(value = "/save", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Boolean> savePath(@Valid @RequestPart(value = "dto") PathRequestDto pathRequestDto,
@@ -31,14 +32,16 @@ public class PathController {
         return ResponseEntity.ok(pathService.addPath(pathRequestDto, SecurityUtil.getCurrentMemberId(), pathImage));
     }
 
+    // 모든 게시판 정보 출력
     @GetMapping(value = "")
-    public List<Path> getAllPaths() {
+    public List<PathAllResponseDto> getAllPaths() {
         return pathService.getAllPaths();
     }
 
+    // 게시판 id에 해당하는 게시판 정보 출력
     @GetMapping(value = "/{pathId}")
-    public ResponseEntity<PathResponseDto> getPathById(@PathVariable Long pathId) {
-        PathResponseDto pathResponseDto = pathService.getPathResponseById(pathId);
+    public ResponseEntity<PathDetailResponseDto> getPathById(@PathVariable Long pathId) {
+        PathDetailResponseDto pathResponseDto = pathService.getPathResponseById(pathId);
         return ResponseEntity.ok(pathResponseDto);
     }
 }

@@ -2,22 +2,28 @@ package com.example.OpenSource.domain.path.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
+import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
 
+import com.example.OpenSource.domain.comment.dto.PathCommentResponseDto;
+import com.example.OpenSource.domain.comment.repository.CommentRepository;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.domain.path.domain.Coordinate;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.path.dto.CoordinateDto;
+import com.example.OpenSource.domain.path.dto.PathAllResponseDto;
+import com.example.OpenSource.domain.path.dto.PathDetailResponseDto;
 import com.example.OpenSource.domain.path.dto.PathRequestDto;
-import com.example.OpenSource.domain.path.dto.PathResponseDto;
 import com.example.OpenSource.domain.path.repository.CoordinateRepository;
 import com.example.OpenSource.domain.path.repository.PathRepository;
 import com.example.OpenSource.global.error.CustomException;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +39,7 @@ public class PathService {
     private final PathRepository pathRepository;
     private final MemberRepository memberRepository;
     private final CoordinateRepository coordinateRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public Boolean addPath(PathRequestDto pathRequestDto, Long memberId, MultipartFile pathImage) {
@@ -74,12 +81,34 @@ public class PathService {
                 .build();
     }
 
-    public List<Path> getAllPaths() {
-        return pathRepository.findAll();
+    public List<PathAllResponseDto> getAllPaths() {
+        List<Path> paths = pathRepository.findAll();
+        List<PathAllResponseDto> pathAllDtos = new ArrayList<>();
+
+        for (Path path : paths) {
+            PathAllResponseDto response = Optional.of(path).map(PathAllResponseDto::new)
+                    .orElseThrow(() -> new CustomException(MISMATCH_DTO));
+            pathAllDtos.add(response);
+        }
+
+        return pathAllDtos;
     }
 
-    public PathResponseDto getPathResponseById(Long pathId) {
+    /*
+    TODO: 해당 게시판의 댓글도 출력하도록 수정하기
+     */
+    public PathDetailResponseDto getPathResponseById(Long pathId) {
         Path path = pathRepository.findById(pathId).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
-        return PathResponseDto.of(path);
+
+        List<PathCommentResponseDto> commentDtoList = commentRepository.findByPathId(pathId)
+                .stream()
+                .map(PathCommentResponseDto::new)
+                .collect(Collectors.toList());
+
+        return PathDetailResponseDto.of(path, commentDtoList);
     }
+
+    /*
+    TODO: 수정, 삭제 기능 추가하기
+     */
 }

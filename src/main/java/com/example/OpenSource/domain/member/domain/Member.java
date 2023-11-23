@@ -1,6 +1,7 @@
 package com.example.OpenSource.domain.member.domain;
 
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthProvider;
+import com.example.OpenSource.domain.comment.entity.Comment;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -63,7 +64,11 @@ public class Member {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "member_id")
+    @JsonIgnore // 무한 루프 방지
     private List<Path> paths = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String nickname, String name, int walk, Authority authority,
@@ -80,5 +85,23 @@ public class Member {
 
     public void setProfileImage(Blob imageFile) {
         this.profileImage = imageFile;
+    }
+
+    public void addPaths(Path path) {
+        paths.add(path);
+        path.setMember(this);
+    }
+
+    public void removePaths(Path path) {
+        paths.remove(path);
+    }
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
+        comment.setMember(this);
+    }
+
+    public void removeComments(Comment comment) {
+        comments.remove(comment);
     }
 }
