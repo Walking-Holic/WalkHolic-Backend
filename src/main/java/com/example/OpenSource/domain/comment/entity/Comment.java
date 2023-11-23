@@ -68,4 +68,12 @@ public class Comment {
         commentResponseDto.setScore(score);
         return commentResponseDto;
     }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+    }
 }

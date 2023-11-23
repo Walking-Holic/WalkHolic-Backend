@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +52,9 @@ public class Path {
     // 총 소요 시간
     private String estimatedTime;
 
-    
+    // 게시판의 평점의 평균
+    private double averageScore;
+
     @Lob
     @JsonIgnore
     private Blob pathImage;
@@ -66,7 +67,7 @@ public class Path {
     private Member member;
 
     @OneToMany(mappedBy = "path", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
 
     public void setCoordinates(List<Coordinate> savedCoordinates) {
@@ -75,5 +76,22 @@ public class Path {
 
     public void setPathImage(Blob pathImage) {
         this.pathImage = pathImage;
+    }
+
+    public void setAverageScore(double averageScore) {
+        this.averageScore = averageScore;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
+        comment.setPath(this);
+    }
+
+    public void removeComments(Comment comment) {
+        comments.remove(comment);
     }
 }

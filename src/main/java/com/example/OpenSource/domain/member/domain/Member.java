@@ -86,4 +86,22 @@ public class Member {
     public void setProfileImage(Blob imageFile) {
         this.profileImage = imageFile;
     }
+
+    public void addPaths(Path path) {
+        paths.add(path);
+        path.setMember(this);
+    }
+
+    public void removePaths(Path path) {
+        paths.remove(path);
+    }
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
+        comment.setMember(this);
+    }
+
+    public void removeComments(Comment comment) {
+        comments.remove(comment);
+    }
 }

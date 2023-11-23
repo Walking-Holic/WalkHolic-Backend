@@ -7,14 +7,17 @@ import com.example.OpenSource.domain.path.domain.Path;
 import java.sql.Blob;
 import java.sql.SQLException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class PathAllResponseDto {
     private Long id;
     private String title;
     private double totalDistance;
     private Difficulty difficulty;
     private String estimatedTime;
+    private double averageScore;
     private byte[] pathImage;
     private MemberResponseDto member;
 
@@ -25,6 +28,7 @@ public class PathAllResponseDto {
         this.totalDistance = path.getTotalDistance();
         this.difficulty = path.getDifficulty();
         this.estimatedTime = path.getEstimatedTime();
+        this.averageScore = path.getAverageScore();
         declarePathImage(path.getPathImage());
         this.member = MemberResponseDto.of(member);
     }

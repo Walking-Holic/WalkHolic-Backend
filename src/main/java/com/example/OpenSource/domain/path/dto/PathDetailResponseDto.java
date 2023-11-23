@@ -22,6 +22,7 @@ public class PathDetailResponseDto {
     private double totalDistance;
     private Difficulty difficulty;
     private String estimatedTime;
+    private double averageScore;
     private byte[] pathImage;
     private List<CoordinateDto> coordinates;
     private MemberResponseDto member;
@@ -36,6 +37,7 @@ public class PathDetailResponseDto {
                 .totalDistance(path.getTotalDistance())
                 .difficulty(path.getDifficulty())
                 .estimatedTime(path.getEstimatedTime())
+                .averageScore(path.getAverageScore())
                 .pathImage(declareChannelImage(path.getPathImage()))
                 .coordinates(mapCoordinatesToDto(path.getCoordinates()))
                 .member(MemberResponseDto.of(member))
