@@ -19,6 +19,7 @@ public class PathDetailResponseDto {
 
     private Long id;
     private String title;
+    private String content;
     private double totalDistance;
     private Difficulty difficulty;
     private String estimatedTime;
@@ -34,6 +35,7 @@ public class PathDetailResponseDto {
         return PathDetailResponseDto.builder()
                 .id(path.getId())
                 .title(path.getTitle())
+                .content(path.getContent())
                 .totalDistance(path.getTotalDistance())
                 .difficulty(path.getDifficulty())
                 .estimatedTime(path.getEstimatedTime())
