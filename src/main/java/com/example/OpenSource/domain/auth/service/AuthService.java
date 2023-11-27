@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.auth.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.DUPLICATE_RESOURCE;
 import static com.example.OpenSource.global.error.ErrorCode.INVALID_REFRESH_TOKEN;
+import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_REFRESH_TOKEN;
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_USERNAME_OR_PASSWORD;
 import static com.example.OpenSource.global.error.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
@@ -16,6 +17,7 @@ import com.example.OpenSource.domain.auth.repository.RefreshTokenRepository;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
+import com.example.OpenSource.global.error.ErrorCode;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Blob;
@@ -72,7 +74,7 @@ public class AuthService {
     // 기본 이미지 설정
     public static Blob getDefaultProfileImage() {
         try {
-            ClassPathResource resource = new ClassPathResource("webapp/img/default.png");
+            ClassPathResource resource = new ClassPathResource("webapp/img/profile.png");
             byte[] defaultImageData = Files.readAllBytes(resource.getFile().toPath());
             return new SerialBlob(defaultImageData);
         } catch (IOException | SQLException e) {
@@ -136,5 +138,40 @@ public class AuthService {
         refreshTokenRepository.save(newRefreshToken);
 
         return tokenDto;
+    }
+
+    @Transactional
+    public boolean updateMember(Long memberId, RegisterRequestDto dto, MultipartFile profileImage) {
+        Member oldMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        checkMemberOwner(oldMember, memberId);
+
+        oldMember.update(dto.getEmail(), dto.getPassword(), dto.getNickname(), dto.getName());
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            saveProfileImageFromDto(profileImage, oldMember);
+        } else {
+            oldMember.setProfileImage(getDefaultProfileImage());
+        }
+
+        memberRepository.save(oldMember);
+        return true;
+    }
+
+    public static void checkMemberOwner(Member member, Long memberId) {
+        if (!member.getId().equals(memberId)) {
+            throw new CustomException(ErrorCode.INVALID_MEMBER);
+        }
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member oldMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        checkMemberOwner(oldMember, memberId);
+
+        memberRepository.delete(oldMember);
     }
 }

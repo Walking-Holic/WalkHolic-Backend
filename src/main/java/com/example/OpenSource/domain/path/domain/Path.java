@@ -20,6 +20,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.sql.Blob;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -93,5 +94,24 @@ public class Path {
 
     public void removeComments(Comment comment) {
         comments.remove(comment);
+    }
+
+    public void update(String title, String content, double totalDistance, Difficulty difficulty,
+                       String estimatedTime) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+        if (Objects.nonNull(totalDistance)) {
+            this.totalDistance = totalDistance;
+        }
+        if (difficulty != null) {
+            this.difficulty = difficulty;
+        }
+        if (estimatedTime != null) {
+            this.estimatedTime = estimatedTime;
+        }
     }
 }
