@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,5 +55,11 @@ public class PathController {
             @RequestPart() MultipartFile pathImage) {
         return ResponseEntity.ok(
                 pathService.updatePath(pathId, pathRequestDto, SecurityUtil.getCurrentMemberId(), pathImage));
+    }
+
+    @DeleteMapping(value = "/delete/{pathId}")
+    public ResponseEntity deletePath(@PathVariable Long pathId) {
+        pathService.deletePath(pathId, SecurityUtil.getCurrentMemberId());
+        return ResponseEntity.ok().body("삭제 성공!");
     }
 }

@@ -140,5 +140,14 @@ public class PathService {
         return true;
     }
 
+    @Transactional
+    public boolean deletePath(Long pathId, Long memberId) {
+        Path oldPath = pathRepository.findById(pathId)
+                .orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
 
+        checkMemberOwner(oldPath.getMember(), memberId);
+
+        pathRepository.delete(oldPath);
+        return true;
+    }
 }
