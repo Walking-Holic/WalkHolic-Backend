@@ -159,11 +159,10 @@ public class AuthService {
         return true;
     }
 
-    public boolean checkMemberOwner(Member member, Long memberId) {
+    public static void checkMemberOwner(Member member, Long memberId) {
         if (!member.getId().equals(memberId)) {
             throw new CustomException(ErrorCode.INVALID_MEMBER);
         }
-        return true;
     }
 
     @Transactional
