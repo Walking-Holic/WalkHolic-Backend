@@ -23,6 +23,7 @@ public enum ErrorCode {
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
     INVALID_CONTEXT(UNAUTHORIZED, "Security Context 에 인증 정보가 없습니다."),
+    INVALID_MEMBER(UNAUTHORIZED, "해당 사용자가 아닙니다."),
 
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */

@@ -8,10 +8,12 @@ import com.example.OpenSource.domain.auth.infra.kakao.KakaoLoginParams;
 import com.example.OpenSource.domain.auth.infra.naver.NaverLoginParams;
 import com.example.OpenSource.domain.auth.service.AuthService;
 import com.example.OpenSource.domain.auth.service.OAuthLoginService;
+import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,4 +55,12 @@ public class AuthController {
         return ResponseEntity.ok(oAuthLoginService.login(params));
     }
 
+    @PatchMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Boolean> updateMember(
+            @Valid @RequestPart(value = "dto") RegisterRequestDto registerRequestDto,
+            @RequestPart(required = false) MultipartFile profileImage) {
+        return ResponseEntity.ok(
+                authService.updateMember(SecurityUtil.getCurrentMemberId(), registerRequestDto, profileImage));
+    }
 }
