@@ -74,7 +74,7 @@ public class AuthService {
     // 기본 이미지 설정
     public static Blob getDefaultProfileImage() {
         try {
-            ClassPathResource resource = new ClassPathResource("webapp/img/default.png");
+            ClassPathResource resource = new ClassPathResource("webapp/img/profile.png");
             byte[] defaultImageData = Files.readAllBytes(resource.getFile().toPath());
             return new SerialBlob(defaultImageData);
         } catch (IOException | SQLException e) {

@@ -1,6 +1,6 @@
 package com.example.OpenSource.domain.path.service;
 
-import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
+import static com.example.OpenSource.domain.auth.service.AuthService.getDefaultProfileImage;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
@@ -50,7 +50,7 @@ public class PathService {
         if (pathImage != null && !pathImage.isEmpty()) {
             savePathImageFromDto(pathImage, newPath);
         } else {
-            throw new CustomException(IMAGE_NOT_FOUND);
+            newPath.setPathImage(getDefaultProfileImage());
         }
 
         List<Coordinate> coordinatesList = pathRequestDto.getCoordinates().stream()
