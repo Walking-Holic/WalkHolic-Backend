@@ -18,6 +18,7 @@ public class PathAllResponseDto {
     private Difficulty difficulty;
     private String estimatedTime;
     private double averageScore;
+    private int commentCount;
     private byte[] pathImage;
     private MemberResponseDto member;
 
@@ -29,6 +30,7 @@ public class PathAllResponseDto {
         this.difficulty = path.getDifficulty();
         this.estimatedTime = path.getEstimatedTime();
         this.averageScore = path.getAverageScore();
+        this.commentCount = path.getComments().size();
         declarePathImage(path.getPathImage());
         this.member = MemberResponseDto.of(member);
     }
