@@ -6,11 +6,13 @@ import lombok.Getter;
 
 @Getter
 public class PathCommentResponseDto {
+    private Long id;
     private String contents;
     private int score;
     private MemberResponseDto member;
 
     public PathCommentResponseDto(Comment comment) {
+        this.id = comment.getId();
         this.contents = comment.getContents();
         this.score = comment.getScore();
         this.member = MemberResponseDto.of(comment.getMember());
