@@ -140,6 +140,7 @@ public class AuthService {
         return tokenDto;
     }
 
+    @Transactional
     public boolean updateMember(Long memberId, RegisterRequestDto dto, MultipartFile profileImage) {
         Member oldMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -163,5 +164,15 @@ public class AuthService {
             throw new CustomException(ErrorCode.INVALID_MEMBER);
         }
         return true;
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member oldMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        checkMemberOwner(oldMember, memberId);
+
+        memberRepository.delete(oldMember);
     }
 }

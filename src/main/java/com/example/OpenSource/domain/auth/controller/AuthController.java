@@ -11,8 +11,10 @@ import com.example.OpenSource.domain.auth.service.OAuthLoginService;
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,5 +64,11 @@ public class AuthController {
             @RequestPart(required = false) MultipartFile profileImage) {
         return ResponseEntity.ok(
                 authService.updateMember(SecurityUtil.getCurrentMemberId(), registerRequestDto, profileImage));
+    }
+
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity deleteMember() {
+        authService.deleteMember(SecurityUtil.getCurrentMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body("삭제 성공!");
     }
 }
