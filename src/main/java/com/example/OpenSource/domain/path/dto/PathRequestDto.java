@@ -5,17 +5,16 @@ import com.example.OpenSource.domain.path.domain.Difficulty;
 import com.example.OpenSource.domain.path.domain.Path;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class PathRequestDto {
 
     @NotEmpty(message = "제목을 입력해주세요.")
@@ -32,9 +31,9 @@ public class PathRequestDto {
 
     @NotEmpty(message = "총 소요시간을 입력해주세요.")
     private String estimatedTime;
-    
+
     @NotEmpty(message = "경로를 설정해주세요.")
-    private List<CoordinateDto> coordinates = new ArrayList<>();
+    private List<CoordinateDto> coordinates;
 
     public Path toPath(Member member) {
         return Path.builder()

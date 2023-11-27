@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,5 +44,15 @@ public class PathController {
     public ResponseEntity<PathDetailResponseDto> getPathById(@PathVariable Long pathId) {
         PathDetailResponseDto pathResponseDto = pathService.getPathResponseById(pathId);
         return ResponseEntity.ok(pathResponseDto);
+    }
+
+    @PatchMapping(value = "/update/{pathId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Boolean> updatePath(
+            @PathVariable Long pathId,
+            @Valid @RequestPart(value = "dto") PathRequestDto pathRequestDto,
+            @RequestPart() MultipartFile pathImage) {
+        return ResponseEntity.ok(
+                pathService.updatePath(pathId, pathRequestDto, SecurityUtil.getCurrentMemberId(), pathImage));
     }
 }
