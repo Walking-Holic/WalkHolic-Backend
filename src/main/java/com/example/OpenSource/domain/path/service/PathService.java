@@ -1,7 +1,7 @@
 package com.example.OpenSource.domain.path.service;
 
 import static com.example.OpenSource.domain.auth.service.AuthService.checkMemberOwner;
-import static com.example.OpenSource.domain.auth.service.AuthService.getDefaultProfileImage;
+import static com.example.OpenSource.global.error.ErrorCode.IMAGE_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
@@ -51,7 +51,7 @@ public class PathService {
         if (pathImage != null && !pathImage.isEmpty()) {
             savePathImageFromDto(pathImage, newPath);
         } else {
-            newPath.setPathImage(getDefaultProfileImage());
+            throw new CustomException(IMAGE_NOT_FOUND);
         }
 
         List<Coordinate> coordinatesList = pathRequestDto.getCoordinates().stream()
@@ -125,7 +125,7 @@ public class PathService {
         if (pathImage != null && !pathImage.isEmpty()) {
             savePathImageFromDto(pathImage, oldPath);
         } else {
-            oldPath.setPathImage(getDefaultProfileImage());
+            throw new CustomException(IMAGE_NOT_FOUND);
         }
 
         oldPath.getCoordinates().clear(); // 기존 좌표 정보 삭제
