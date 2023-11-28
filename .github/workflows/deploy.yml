@@ -1,0 +1,45 @@
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Connect deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          ghtoken: ${{ secrets.GHP_TOKEN }}
+      - name: Deploy
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CLOUDTYPE_TOKEN }}
+          project: kwforu123/walkholic
+          stage: main
+          yaml: |
+            name: backend
+            app: java@17
+            options:
+              ports: 8080
+              env:
+                - name: DB_URL
+                  secret: DB_URL
+                - name: DB_PASSWD
+                  secret: DB_PASSWD
+                - name: JWT_SECRET
+                  secret: JWT_SECRET
+                - name: KAKAO_CLIENT_ID
+                  secret: KAKAO_CLIENT_ID
+                - name: NAVER_SECRET
+                  secret: NAVER_SECRET
+                - name: NAVER_CLIENT_ID
+                  secret: NAVER_CLIENT_ID
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}
+              preset: java-springboot
