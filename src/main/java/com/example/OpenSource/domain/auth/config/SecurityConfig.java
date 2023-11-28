@@ -51,6 +51,7 @@ public class SecurityConfig {
                 // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
                 .authorizeHttpRequests(
                         authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/main").permitAll()
                                 .requestMatchers("/test/**").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/path/**").permitAll()
