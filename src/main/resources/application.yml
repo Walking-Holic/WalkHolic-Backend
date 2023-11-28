@@ -2,12 +2,34 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/walk_holic?characterEncoding=UTF-8
+    url: ${DB_URL}
     username: root
-    password: tlsshrla2@
+    password: ${DB_PASSWD}
 
   jpa:
     database: MYSQL
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+
+
+
+#HS512 - 512bit - 64byte ??? secret key
+jwt:
+  secret:
+    key: ${JWT_SECRET}
+
+#oauth
+oauth:
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    url:
+      auth: https://kauth.kakao.com
+      api: https://kapi.kakao.com
+
+  naver:
+    secret: ${NAVER_SECRET}
+    client-id: ${VIRKmgRTdSjqV_uRayTm}
+    url:
+      auth: https://nid.naver.com
+      api: https://openapi.naver.com
