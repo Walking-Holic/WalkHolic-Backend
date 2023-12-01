@@ -4,6 +4,7 @@ import com.example.OpenSource.domain.auth.dto.LoginRequestDto;
 import com.example.OpenSource.domain.auth.dto.RegisterRequestDto;
 import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.dto.TokenRequestDto;
+import com.example.OpenSource.domain.auth.dto.UpdateRequestDto;
 import com.example.OpenSource.domain.auth.infra.kakao.KakaoLoginParams;
 import com.example.OpenSource.domain.auth.infra.naver.NaverLoginParams;
 import com.example.OpenSource.domain.auth.service.AuthService;
@@ -60,10 +61,10 @@ public class AuthController {
     @PatchMapping(value = "/update", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Boolean> updateMember(
-            @Valid @RequestPart(value = "dto") RegisterRequestDto registerRequestDto,
+            @Valid @RequestPart(value = "dto") UpdateRequestDto updateRequestDto,
             @RequestPart(required = false) MultipartFile profileImage) {
         return ResponseEntity.ok(
-                authService.updateMember(SecurityUtil.getCurrentMemberId(), registerRequestDto, profileImage));
+                authService.updateMember(SecurityUtil.getCurrentMemberId(), updateRequestDto, profileImage));
     }
 
     @DeleteMapping(value = "/delete")

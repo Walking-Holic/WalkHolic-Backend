@@ -87,13 +87,7 @@ public class Member {
         this.profileImage = imageFile;
     }
 
-    public void update(String email, String password, String nickname, String name) {
-        if (email != null) {
-            this.email = email;
-        }
-        if (password != null) {
-            this.password = password;
-        }
+    public void update(String nickname, String name) {
         if (nickname != null) {
             this.nickname = nickname;
         }
