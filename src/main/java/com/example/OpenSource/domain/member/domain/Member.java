@@ -13,14 +13,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,13 +66,26 @@ public class Member {
     @JsonIgnore
     private Blob profileImage;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "member_id")
-    @JsonIgnore // 무한 루프 방지
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Path> paths = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "collection",
+            joinColumns = @JoinColumn(name = "path_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    private Set<Path> pathCollections = new HashSet<>();
+
+    public boolean isCollections(Path path) {
+        if (path == null) {
+            return false;
+        }
+        return this.pathCollections.contains(path);
+    }
 
     @Builder
     public Member(String email, String password, String nickname, String name, int walk, Authority authority,
@@ -112,5 +129,17 @@ public class Member {
 
     public void removeComments(Comment comment) {
         comments.remove(comment);
+    }
+
+    public void addPathCollection(Path path) {
+        this.pathCollections.add(path);
+    }
+
+    public void removePathCollection(Path path) {
+        this.pathCollections.remove(path);
+    }
+
+    public Set<Path> getCollectedPaths() {
+        return pathCollections;
     }
 }

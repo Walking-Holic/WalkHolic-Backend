@@ -24,12 +24,13 @@ public class PathDetailResponseDto {
     private Difficulty difficulty;
     private String estimatedTime;
     private double averageScore;
+    private boolean isCollection;
     private byte[] pathImage;
     private List<CoordinateDto> coordinates;
     private MemberResponseDto member;
     private List<PathCommentResponseDto> comments;
 
-    public static PathDetailResponseDto of(Path path, List<PathCommentResponseDto> comments) {
+    public static PathDetailResponseDto of(Path path, List<PathCommentResponseDto> comments, Member user) {
         Member member = path.getMember();
 
         return PathDetailResponseDto.builder()
@@ -40,6 +41,7 @@ public class PathDetailResponseDto {
                 .difficulty(path.getDifficulty())
                 .estimatedTime(path.getEstimatedTime())
                 .averageScore(path.getAverageScore())
+                .isCollection(user.isCollections(path))
                 .pathImage(declareChannelImage(path.getPathImage()))
                 .coordinates(mapCoordinatesToDto(path.getCoordinates()))
                 .member(MemberResponseDto.of(member))

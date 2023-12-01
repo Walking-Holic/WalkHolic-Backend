@@ -58,6 +58,8 @@ public class PathService {
                 .map(coordinateDto -> mapCoordinateDtoToEntity(coordinateDto, newPath))
                 .collect(Collectors.toList());
 
+        member.addPaths(newPath);
+
         pathRepository.save(newPath);
         coordinateRepository.saveAll(coordinatesList);
 
@@ -82,12 +84,14 @@ public class PathService {
                 .build();
     }
 
-    public List<PathAllResponseDto> getAllPaths() {
+    public List<PathAllResponseDto> getAllPaths(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         List<Path> paths = pathRepository.findAll();
         List<PathAllResponseDto> pathAllDtos = new ArrayList<>();
 
         for (Path path : paths) {
-            PathAllResponseDto response = Optional.of(path).map(PathAllResponseDto::new)
+            PathAllResponseDto response = Optional.of(path)
+                    .map(p -> new PathAllResponseDto(p, member))
                     .orElseThrow(() -> new CustomException(MISMATCH_DTO));
             pathAllDtos.add(response);
         }
@@ -95,7 +99,8 @@ public class PathService {
         return pathAllDtos;
     }
 
-    public PathDetailResponseDto getPathResponseById(Long pathId) {
+    public PathDetailResponseDto getPathResponseById(Long pathId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         Path path = pathRepository.findById(pathId).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
 
         List<PathCommentResponseDto> commentDtoList = commentRepository.findByPathId(pathId)
@@ -103,7 +108,7 @@ public class PathService {
                 .map(PathCommentResponseDto::new)
                 .collect(Collectors.toList());
 
-        return PathDetailResponseDto.of(path, commentDtoList);
+        return PathDetailResponseDto.of(path, commentDtoList, member);
     }
 
     /*
@@ -142,10 +147,13 @@ public class PathService {
 
     @Transactional
     public boolean deletePath(Long pathId, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         Path oldPath = pathRepository.findById(pathId)
                 .orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
 
         checkMemberOwner(oldPath.getMember(), memberId);
+
+        member.removePaths(oldPath);
 
         pathRepository.delete(oldPath);
         return true;
