@@ -13,6 +13,7 @@ import com.example.OpenSource.domain.auth.dto.LoginRequestDto;
 import com.example.OpenSource.domain.auth.dto.RegisterRequestDto;
 import com.example.OpenSource.domain.auth.dto.TokenDto;
 import com.example.OpenSource.domain.auth.dto.TokenRequestDto;
+import com.example.OpenSource.domain.auth.dto.UpdateRequestDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
 import com.example.OpenSource.domain.auth.repository.RefreshTokenRepository;
 import com.example.OpenSource.domain.member.domain.Member;
@@ -129,13 +130,13 @@ public class AuthService {
     }
 
     @Transactional
-    public boolean updateMember(Long memberId, RegisterRequestDto dto, MultipartFile profileImage) {
+    public boolean updateMember(Long memberId, UpdateRequestDto dto, MultipartFile profileImage) {
         Member oldMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         checkMemberOwner(oldMember, memberId);
 
-        oldMember.update(dto.getEmail(), dto.getPassword(), dto.getNickname(), dto.getName());
+        oldMember.update(dto.getNickname(), dto.getName());
 
         if (profileImage != null && !profileImage.isEmpty()) {
             saveProfileImageFromDto(profileImage, oldMember);

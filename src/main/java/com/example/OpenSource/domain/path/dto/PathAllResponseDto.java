@@ -19,10 +19,11 @@ public class PathAllResponseDto {
     private String estimatedTime;
     private double averageScore;
     private int commentCount;
+    private boolean isCollection;
     private byte[] pathImage;
     private MemberResponseDto member;
 
-    public PathAllResponseDto(Path path) {
+    public PathAllResponseDto(Path path, Member user) {
         Member member = path.getMember();
         this.id = path.getId();
         this.title = path.getTitle();
@@ -31,6 +32,7 @@ public class PathAllResponseDto {
         this.estimatedTime = path.getEstimatedTime();
         this.averageScore = path.getAverageScore();
         this.commentCount = path.getComments().size();
+        this.isCollection = user.isCollections(path);
         declarePathImage(path.getPathImage());
         this.member = MemberResponseDto.of(member);
     }
