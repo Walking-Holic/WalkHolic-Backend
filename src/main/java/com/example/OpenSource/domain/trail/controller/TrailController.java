@@ -18,7 +18,8 @@ public class TrailController {
 
     @GetMapping(value = "/main")
     public List<TrailMainResponseDto> getMainTrails(@RequestParam Double latitude,
-                                                    @RequestParam Double longitude) {
-        return trailService.listMyMap(SecurityUtil.getCurrentMemberId(), latitude, longitude);
+                                                    @RequestParam Double longitude,
+                                                    @RequestParam Double distance) {
+        return trailService.listMyMap(SecurityUtil.getCurrentMemberId(), latitude, longitude, distance);
     }
 }
