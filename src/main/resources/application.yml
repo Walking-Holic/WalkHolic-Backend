@@ -11,6 +11,11 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+      database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
+
+    batch:
+      jdbc:
+        initialize-schema: always
 
 
 
