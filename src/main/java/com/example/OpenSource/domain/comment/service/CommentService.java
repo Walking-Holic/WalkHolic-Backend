@@ -106,6 +106,7 @@ public class CommentService {
      * trail에 대한 댓글 기능
      */
 
+    @Transactional
     public Boolean saveTrailComment(CommentDto commentDto, Long memberId, Long id) {
         Trail trail = trailRepository.findById(id).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -119,6 +120,7 @@ public class CommentService {
         updateAverageScoreComment(trail); // 게시판 평균 평점 업데이트
         return true;
     }
+
 
     public void updateAverageScoreComment(Trail trail) {
         List<Comment> comments = trail.getComments();
@@ -138,6 +140,7 @@ public class CommentService {
         trail.setAverageScore(averageScore);
     }
 
+    @Transactional
     public Boolean deleteTrailComment(Long id, Long memberId) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
         if (commentRepository.getById(id).getMember().getId() != memberId) { // 작성자와 삭제자가 일치하지 않음
@@ -151,6 +154,7 @@ public class CommentService {
         return true;
     }
 
+    @Transactional
     public Boolean updateTrailComment(CommentDto commentDto, Long memberId, Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
         if (commentRepository.getById(id).getMember().getId() != memberId) { // 작성자와 수정자가 일치하지 않음
@@ -158,7 +162,6 @@ public class CommentService {
         }
 
         comment.update(commentDto.getContents(), commentDto.getScore());
-        commentRepository.save(comment);
         updateAverageScoreComment(comment.getTrail());
         return true;
     }
