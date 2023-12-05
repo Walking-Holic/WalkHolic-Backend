@@ -13,6 +13,8 @@ import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.path.repository.PathRepository;
+import com.example.OpenSource.domain.trail.domain.Trail;
+import com.example.OpenSource.domain.trail.repository.TrailRepository;
 import com.example.OpenSource.global.error.CustomException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PathRepository pathRepository;
+    private final TrailRepository trailRepository;
 
     @Transactional
     public boolean save(CommentDto commentDto, Long memberId, Long pathId) {
@@ -96,6 +99,70 @@ public class CommentService {
         }
         comment.update(commentDto.getContents(), commentDto.getScore());
         updateAverageScoreComment(comment.getPath());
+        return true;
+    }
+
+    /*
+     * trail에 대한 댓글 기능
+     */
+
+    @Transactional
+    public Boolean saveTrailComment(CommentDto commentDto, Long memberId, Long id) {
+        Trail trail = trailRepository.findById(id).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Comment comment = commentDto.toComment(member, trail);
+
+        member.addComments(comment); // 멤버에 댓글 추가
+        trail.addComments(comment); // 게시판에 댓글 추가
+
+        commentRepository.save(comment);
+        updateAverageScoreComment(trail); // 게시판 평균 평점 업데이트
+        return true;
+    }
+
+
+    public void updateAverageScoreComment(Trail trail) {
+        List<Comment> comments = trail.getComments();
+        double averageScore;
+
+        if (comments != null && !comments.isEmpty()) {
+            int totalScore = 0;
+            for (Comment comment : comments) {
+                totalScore += comment.getScore();
+            }
+
+            averageScore = (double) totalScore / comments.size();
+        } else {
+            averageScore = 0.0;
+        }
+        log.info(String.valueOf(averageScore));
+        trail.setAverageScore(averageScore);
+    }
+
+    @Transactional
+    public Boolean deleteTrailComment(Long id, Long memberId) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+        if (commentRepository.getById(id).getMember().getId() != memberId) { // 작성자와 삭제자가 일치하지 않음
+            throw new CustomException(MISMATCH_COMMENT_USERNAME);
+        }
+        commentRepository.deleteById(id);
+        comment.getMember().removeComments(comment);
+        comment.getTrail().removeComments(comment);
+
+        updateAverageScoreComment(comment.getTrail());
+        return true;
+    }
+
+    @Transactional
+    public Boolean updateTrailComment(CommentDto commentDto, Long memberId, Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
+        if (commentRepository.getById(id).getMember().getId() != memberId) { // 작성자와 수정자가 일치하지 않음
+            throw new CustomException(MISMATCH_COMMENT_USERNAME);
+        }
+
+        comment.update(commentDto.getContents(), commentDto.getScore());
+        updateAverageScoreComment(comment.getTrail());
         return true;
     }
 }

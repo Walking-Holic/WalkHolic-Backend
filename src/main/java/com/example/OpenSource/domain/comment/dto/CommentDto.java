@@ -3,6 +3,7 @@ package com.example.OpenSource.domain.comment.dto;
 import com.example.OpenSource.domain.comment.entity.Comment;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.path.domain.Path;
+import com.example.OpenSource.domain.trail.domain.Trail;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -28,11 +29,20 @@ public class CommentDto {
 
     private Long pathId;
 
-    public Comment toComment(Member member, Path path){
+    public Comment toComment(Member member, Path path) {
         return Comment.builder()
                 .contents(contents)
                 .score(score)
                 .path(path)
+                .member(member)
+                .build();
+    }
+
+    public Comment toComment(Member member, Trail trail) {
+        return Comment.builder()
+                .contents(contents)
+                .score(score)
+                .trail(trail)
                 .member(member)
                 .build();
     }
