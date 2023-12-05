@@ -34,6 +34,8 @@ public class CsvReader {
                 "coursSpotLo"); //행으로 읽은 데이터 매칭할 데이터 각 이름
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer); //lineTokenizer 설정
 
+        flatFileItemReader.setLinesToSkip(1); // 필드 행 제거
+
         /* beanWrapperFieldSetMapper: 매칭할 class 타입 지정 */
         BeanWrapperFieldSetMapper<TrailDto> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(TrailDto.class);

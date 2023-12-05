@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 @Builder
 @Getter
@@ -44,4 +45,6 @@ public class Trail {
     private String lnmAddr; // 지번 주소
     private String coursSpotLa; // 위도
     private String coursSpotLo; // 경도
+
+    private Point point;
 }
