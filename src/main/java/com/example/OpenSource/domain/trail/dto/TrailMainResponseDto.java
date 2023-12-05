@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.trail.dto;
 
+import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.trail.domain.Trail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +20,13 @@ public class TrailMainResponseDto {
         this.wlkCoursNm = trail.getWlkCoursNm();
         this.averageScore = trail.getAverageScore();
         this.commentCount = trail.getComments().size();
+    }
+
+    public TrailMainResponseDto(Path path) {
+        this.id = path.getId();
+        this.wlkCoursFlagNm = path.getTitle();
+        this.wlkCoursNm = "(사용자 설정 게시글)";
+        this.averageScore = path.getAverageScore();
+        this.commentCount = path.getComments().size();
     }
 }

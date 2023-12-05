@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.trail.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 
+import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.trail.domain.Direction;
 import com.example.OpenSource.domain.trail.domain.Location;
 import com.example.OpenSource.domain.trail.domain.Trail;
@@ -11,8 +12,10 @@ import com.example.OpenSource.global.error.CustomException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,21 +44,45 @@ public class TrailService {
                 northEast.getLatitude(), northEast.getLongitude(), southWest.getLatitude(), southWest.getLongitude()
         );
 
+        // 범위 내 Trail 찾기
         // NativeQuery로 작성한 pointFormat을 적용
-        Query query = em.createNativeQuery(
+        Query queryTail = em.createNativeQuery(
                 "SELECT * " +
                         "FROM trail AS t " +
                         "WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + "), " +
                         "POINT(t.cours_spot_la, t.cours_spot_lo))"
                 , Trail.class
         ).setMaxResults(10);
-        log.info(query.toString());
 
-        trails = query.getResultList();
+        trails = queryTail.getResultList();
 
         for (Trail trail : trails) {
             TrailMainResponseDto response = Optional.of(trail)
                     .map(t -> new TrailMainResponseDto(trail))
+                    .orElseThrow(() -> new CustomException(MISMATCH_DTO));
+            dtos.add(response);
+        }
+
+        // 범위 내 Path 찾기
+        Query queryPath = em.createNativeQuery(
+                "SELECT DISTINCT p.* " +
+                        "FROM path AS p " +
+                        "JOIN coordinate AS c ON p.path_id = c.path_id " +
+                        "WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + "), POINT(c.latitude, c.longitude))"
+                , Path.class
+        );
+
+        List<Path> paths = queryPath.getResultList();
+        Set<Long> foundPathIds = new HashSet<>();
+
+        // 중복 경로 제거
+        List<Path> filteredPaths = paths.stream()
+                .filter(path -> foundPathIds.add(path.getId()))
+                .toList();
+
+        for (Path path : filteredPaths) {
+            TrailMainResponseDto response = Optional.of(path)
+                    .map(t -> new TrailMainResponseDto(path))
                     .orElseThrow(() -> new CustomException(MISMATCH_DTO));
             dtos.add(response);
         }
