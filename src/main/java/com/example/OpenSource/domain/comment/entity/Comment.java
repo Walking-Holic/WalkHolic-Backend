@@ -3,6 +3,7 @@ package com.example.OpenSource.domain.comment.entity;
 import com.example.OpenSource.domain.comment.dto.CommentResponseDto;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.path.domain.Path;
+import com.example.OpenSource.domain.trail.domain.Trail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,14 +44,19 @@ public class Comment {
     @JoinColumn(name = "PATH_ID")
     private Path path;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TRAIL_ID")
+    private Trail trail;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdTime;
 
     @Builder
-    public Comment(Member member, Path path, String contents, int score) {
+    public Comment(Member member, Path path, Trail trail, String contents, int score) {
         this.member = member;
         this.path = path;
+        this.trail = trail;
         this.contents = contents;
         this.score = score;
     }

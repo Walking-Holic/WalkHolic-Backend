@@ -1,11 +1,15 @@
 package com.example.OpenSource.domain.trail.domain;
 
+import com.example.OpenSource.domain.comment.entity.Comment;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,4 +51,23 @@ public class Trail {
     private String coursSpotLo; // 경도
 
     private Point point;
+
+    // 게시판의 평점의 평균
+    private double averageScore;
+
+    @OneToMany(mappedBy = "trail", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    public void addComments(Comment comment) {
+        comments.add(comment);
+        comment.setTrail(this);
+    }
+
+    public void setAverageScore(double averageScore) {
+        this.averageScore = averageScore;
+    }
+
+    public void removeComments(Comment comment) {
+        comments.remove(comment);
+    }
 }
