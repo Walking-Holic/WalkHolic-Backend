@@ -29,10 +29,8 @@ public class TrailService {
 
     @Transactional(readOnly = true)
     public List<TrailMainResponseDto> listMyMap(Long memberId, Double x, Double y, Double distance) {
-        List<Trail> trails = new ArrayList<>();
+        List<Trail> trails;
         List<TrailMainResponseDto> dtos = new ArrayList<>();
-
-        // TODO: Path도 출력
 
         // Location 자료형으로 변수를 선언하여 해당 요청받은 x,y 값으로 북동쪽과 남서쪽의 위치를 계산
         Location northEast = GeometryUtil.calculate(x, y, distance, Direction.NORTHEAST.getBearing());
@@ -69,6 +67,7 @@ public class TrailService {
                         "FROM path AS p " +
                         "JOIN coordinate AS c ON p.path_id = c.path_id " +
                         "WHERE MBRContains(ST_LINESTRINGFROMTEXT(" + pointFormat + "), POINT(c.latitude, c.longitude))"
+                        + "AND c.sequence = 1"
                 , Path.class
         );
 
