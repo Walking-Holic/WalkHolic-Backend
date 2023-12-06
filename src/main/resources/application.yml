@@ -1,3 +1,6 @@
+server:
+  port: 9000
+
 # DB
 spring:
   datasource:
@@ -13,9 +16,9 @@ spring:
       ddl-auto: update
       database-platform: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
 
-    batch:
-      jdbc:
-        initialize-schema: always
+  batch:
+    jdbc:
+      initialize-schema: always
 
 
 
