@@ -59,6 +59,8 @@ public class Member {
 
     private int walk;
 
+    private int time;
+
     @Enumerated(EnumType.STRING)
     private Rank rank;
 
@@ -141,5 +143,17 @@ public class Member {
 
     public Set<Path> getCollectedPaths() {
         return pathCollections;
+    }
+
+    public void setWalk(int walk) {
+        this.walk = walk;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public void setRank(Rank rank) {
+        this.rank = rank;
     }
 }

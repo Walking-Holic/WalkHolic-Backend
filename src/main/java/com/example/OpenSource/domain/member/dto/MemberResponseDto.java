@@ -31,6 +31,7 @@ public class MemberResponseDto {
     private Rank rank;
 
     private int walk;
+    private int time;
 
     private byte[] profileImage;
 
@@ -42,6 +43,7 @@ public class MemberResponseDto {
                 member.getAuthority(),
                 member.getRank(),
                 member.getWalk(),
+                member.getTime(),
                 null  // null 초기화 후, 이미지 Blob -> bytes 작업 후 적용
         );
         dto.declareProfileImage(member.getProfileImage());
