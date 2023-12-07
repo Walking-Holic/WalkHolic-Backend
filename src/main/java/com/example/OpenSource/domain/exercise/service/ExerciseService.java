@@ -1,7 +1,6 @@
 package com.example.OpenSource.domain.exercise.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
-import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
 
 import com.example.OpenSource.domain.exercise.domain.Exercise;
 import com.example.OpenSource.domain.exercise.dto.ExerciseDto;
@@ -10,9 +9,7 @@ import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,15 +31,24 @@ public class ExerciseService {
     }
 
     @Transactional(readOnly = true)
-    public List<ExerciseDto> getWeeklyExerciseData(Long memberId, LocalDate startDate, LocalDate endDate) {
+    public List<ExerciseDto> getExerciseDataByDateRange(Long memberId, LocalDate startDate, LocalDate endDate) {
         List<Exercise> exercises = exerciseRepository.findByMemberIdAndDateBetween(memberId, startDate, endDate);
-        List<ExerciseDto> dtos = new ArrayList<>();
-        for (Exercise exercise : exercises) {
-            ExerciseDto response = Optional.of(exercise)
-                    .map(ExerciseDto::of)
-                    .orElseThrow(() -> new CustomException(MISMATCH_DTO));
-            dtos.add(response);
-        }
-        return dtos;
+        return exercises.stream()
+                .map(ExerciseDto::of)
+                .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<ExerciseDto> getWeeklyExerciseData(Long memberId, LocalDate startDate, LocalDate endDate) {
+        return getExerciseDataByDateRange(memberId, startDate, endDate);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ExerciseDto> getMonthlyExerciseData(Long memberId, int year, int month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+        return getExerciseDataByDateRange(memberId, startDate, endDate);
+    }
+
+    
 }

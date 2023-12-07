@@ -35,4 +35,11 @@ public class ExerciseController {
                 exerciseService.getWeeklyExerciseData(SecurityUtil.getCurrentMemberId(), startDate, endDate));
     }
 
+    @GetMapping("/monthly")
+    public ResponseEntity<List<ExerciseDto>> getMonthlyExerciseData(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) int year,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) int month) {
+        return ResponseEntity.ok(
+                exerciseService.getMonthlyExerciseData(SecurityUtil.getCurrentMemberId(), year, month));
+    }
 }
