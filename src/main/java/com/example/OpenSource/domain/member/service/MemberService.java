@@ -32,6 +32,7 @@ public class MemberService {
 
     @Transactional
     public boolean updateRank(Long memberId, MemberResponseDto dto) {
+        boolean result = false;
         Member oldMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
@@ -42,10 +43,14 @@ public class MemberService {
         int totalScore = oldMember.getTime() / 100 + oldMember.getWalk() / 10;
         Rank rank = calculateRank(totalScore);
 
+        if (oldMember.getRank() != rank) {
+            result = true;
+        }
+
         oldMember.setRank(rank);
 
         memberRepository.save(oldMember);
-        return true;
+        return result;
     }
 
     // 누적 값에 따라 랭크 계산
