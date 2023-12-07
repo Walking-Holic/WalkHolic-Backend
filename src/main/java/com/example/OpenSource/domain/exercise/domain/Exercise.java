@@ -1,5 +1,6 @@
 package com.example.OpenSource.domain.exercise.domain;
 
+import com.example.OpenSource.domain.exercise.dto.ExerciseDto;
 import com.example.OpenSource.domain.member.domain.Member;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,4 +34,10 @@ public class Exercise {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void update(ExerciseDto exerciseDto) {
+        this.steps += exerciseDto.getSteps();
+        this.durationMinutes += exerciseDto.getDurationMinutes();
+        this.caloriesBurned += exerciseDto.getCaloriesBurned();
+    }
 }

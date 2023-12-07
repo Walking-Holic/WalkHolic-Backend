@@ -25,9 +25,19 @@ public class ExerciseService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Exercise exercise = exerciseDto.toEntity(member);
+        LocalDate exerciseDate = exerciseDto.getDate();
 
-        exerciseRepository.save(exercise);
+        // 같은 날짜에 해당하는 운동 데이터 확인
+        Exercise existingExercise = exerciseRepository.findByMemberIdAndDate(memberId, exerciseDate);
+
+        if (existingExercise != null) {
+            // 같은 날짜에 해당하는 데이터가 있다면 업데이트
+            existingExercise.update(exerciseDto);
+        } else {
+            // 같은 날짜에 해당하는 데이터가 없다면 새로운 데이터 추가
+            Exercise newExercise = exerciseDto.toEntity(member);
+            exerciseRepository.save(newExercise);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -50,5 +60,5 @@ public class ExerciseService {
         return getExerciseDataByDateRange(memberId, startDate, endDate);
     }
 
-    
+
 }
