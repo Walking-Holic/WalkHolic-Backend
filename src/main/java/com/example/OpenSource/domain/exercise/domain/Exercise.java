@@ -9,11 +9,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
+@AllArgsConstructor
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "exercise")
 public class Exercise {
@@ -29,5 +33,4 @@ public class Exercise {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
 }
