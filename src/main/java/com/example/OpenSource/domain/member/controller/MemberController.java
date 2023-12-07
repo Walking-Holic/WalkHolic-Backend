@@ -2,9 +2,8 @@ package com.example.OpenSource.domain.member.controller;
 
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import com.example.OpenSource.domain.member.dto.MemberResponseDto;
+import com.example.OpenSource.domain.member.dto.UpdateRankResponse;
 import com.example.OpenSource.domain.member.service.MemberService;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +30,8 @@ public class MemberController {
     }
 
     @PatchMapping("/update/rank")
-    public ResponseEntity updateRank(
+    public ResponseEntity<UpdateRankResponse> updateRank(
             @RequestBody MemberResponseDto dto) {
-        boolean result = memberService.updateRank(SecurityUtil.getCurrentMemberId(), dto);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isUpdated", result);
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(memberService.updateRank(SecurityUtil.getCurrentMemberId(), dto));
     }
 }

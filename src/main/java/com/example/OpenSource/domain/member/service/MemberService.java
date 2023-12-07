@@ -5,8 +5,10 @@ import static com.example.OpenSource.global.error.ErrorCode.MEMBER_NOT_FOUND;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.domain.Rank;
 import com.example.OpenSource.domain.member.dto.MemberResponseDto;
+import com.example.OpenSource.domain.member.dto.UpdateRankResponse;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,8 @@ public class MemberService {
     }
 
     @Transactional
-    public boolean updateRank(Long memberId, MemberResponseDto dto) {
-        boolean result = false;
+    public UpdateRankResponse updateRank(Long memberId, MemberResponseDto dto) {
+        boolean isUpdated = false;
         Member oldMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
@@ -44,13 +46,18 @@ public class MemberService {
         Rank rank = calculateRank(totalScore);
 
         if (oldMember.getRank() != rank) {
-            result = true;
+            isUpdated = true;
         }
 
         oldMember.setRank(rank);
 
+        // 칼로리 계산
+        int caloriesBurned = calculateCalories(dto.getWalk());
+        UpdateRankResponse response = new UpdateRankResponse(LocalDate.now(), dto.getWalk(), dto.getTime(),
+                caloriesBurned, isUpdated);
+
         memberRepository.save(oldMember);
-        return result;
+        return response;
     }
 
     // 누적 값에 따라 랭크 계산
@@ -73,5 +80,12 @@ public class MemberService {
         } else {
             return Rank.DIAMOND;
         }
+    }
+
+    // 10000보당 칼로리 계산
+    private int calculateCalories(int walkCount) {
+        // 1보당 0.03 칼로리라고 가정
+        double caloriesPerStep = 0.03;
+        return (int) (walkCount * caloriesPerStep);
     }
 }
