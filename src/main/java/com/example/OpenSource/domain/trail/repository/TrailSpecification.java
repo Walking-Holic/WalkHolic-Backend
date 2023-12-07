@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class TrailSpecification {
 
     public static Specification<Trail> addressStartsWith(String address) { //
-        return (root, query, builder) -> builder.like(root.get("lnmAddr"), address + "%");
+        return (root, query, builder) -> builder.like(root.get("lnmAddr"), "%" + address + "%");
     }
 
     public static Specification<Trail> coursLevelEquals(String coursLevelNm) {
