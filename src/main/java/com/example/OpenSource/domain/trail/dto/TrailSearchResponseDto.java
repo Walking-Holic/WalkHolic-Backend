@@ -8,22 +8,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TrailSearchResponseDto {
     private Long id;
-    private String lnmAddr;
+    private String signgu_nm; // SIGNGU_NM
     private String wlkCoursFlagNm;
     private String wlkCoursNm;
     private String coursLevelNm;
-    private String coursLtCn;
+    private String coursDetailLtCn;
     private String coursTimeCn;
     private double averageScore;
     private int commentCount;
 
     public TrailSearchResponseDto(Trail trail) {
         this.id = trail.getId();
-        this.lnmAddr = trail.getLnmAddr();
+        this.signgu_nm = trail.getSignguNm();
         this.wlkCoursFlagNm = trail.getWlkCoursFlagNm();
         this.wlkCoursNm = trail.getWlkCoursNm();
         this.coursLevelNm = trail.getCoursLevelNm();
-        this.coursLtCn = trail.getCoursLtCn();
+        this.coursDetailLtCn = trail.getCoursDetailLtCn();
         this.coursTimeCn = trail.getCoursTimeCn();
         this.averageScore = trail.getAverageScore();
         this.commentCount = trail.getComments().size();
