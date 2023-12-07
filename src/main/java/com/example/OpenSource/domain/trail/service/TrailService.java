@@ -1,12 +1,17 @@
 package com.example.OpenSource.domain.trail.service;
 
 import static com.example.OpenSource.global.error.ErrorCode.MISMATCH_DTO;
+import static com.example.OpenSource.global.error.ErrorCode.PATH_NOT_FOUND;
 
+import com.example.OpenSource.domain.comment.dto.PathCommentResponseDto;
+import com.example.OpenSource.domain.comment.repository.CommentRepository;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.example.OpenSource.domain.trail.domain.Direction;
 import com.example.OpenSource.domain.trail.domain.Location;
 import com.example.OpenSource.domain.trail.domain.Trail;
+import com.example.OpenSource.domain.trail.dto.TrailDetailResponseDto;
 import com.example.OpenSource.domain.trail.dto.TrailMainResponseDto;
+import com.example.OpenSource.domain.trail.repository.TrailRepository;
 import com.example.OpenSource.domain.trail.util.GeometryUtil;
 import com.example.OpenSource.global.error.CustomException;
 import jakarta.persistence.EntityManager;
@@ -26,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TrailService {
     private final EntityManager em;
+    private final TrailRepository trailRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     public List<TrailMainResponseDto> listMyMap(Long memberId, Double x, Double y, Double distance) {
@@ -87,5 +94,17 @@ public class TrailService {
         }
 
         return dtos;
+    }
+
+    @Transactional(readOnly = true)
+    public TrailDetailResponseDto trailDetailDto(Long trailId) {
+        Trail trail = trailRepository.findById(trailId).orElseThrow(() -> new CustomException(PATH_NOT_FOUND));
+
+        List<PathCommentResponseDto> commentDtoList = commentRepository.findByTrailId(trailId)
+                .stream()
+                .map(PathCommentResponseDto::new)
+                .toList();
+
+        return new TrailDetailResponseDto(trail, commentDtoList);
     }
 }
