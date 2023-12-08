@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.member.domain;
 
 import com.example.OpenSource.domain.auth.domain.oauth.OAuthProvider;
 import com.example.OpenSource.domain.comment.entity.Comment;
+import com.example.OpenSource.domain.exercise.domain.Exercise;
 import com.example.OpenSource.domain.path.domain.Path;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
@@ -81,6 +82,9 @@ public class Member {
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
     private Set<Path> pathCollections = new HashSet<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Exercise> exerciseDataList = new ArrayList<>();
 
     public boolean isCollections(Path path) {
         if (path == null) {

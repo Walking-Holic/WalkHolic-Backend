@@ -2,6 +2,7 @@ package com.example.OpenSource.domain.member.controller;
 
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import com.example.OpenSource.domain.member.dto.MemberResponseDto;
+import com.example.OpenSource.domain.member.dto.UpdateRankResponse;
 import com.example.OpenSource.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,8 @@ public class MemberController {
     }
 
     @PatchMapping("/update/rank")
-    public ResponseEntity<Boolean> updateRank(
+    public ResponseEntity<UpdateRankResponse> updateRank(
             @RequestBody MemberResponseDto dto) {
-
         return ResponseEntity.ok(memberService.updateRank(SecurityUtil.getCurrentMemberId(), dto));
     }
 }
