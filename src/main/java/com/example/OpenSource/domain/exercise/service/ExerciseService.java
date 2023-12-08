@@ -81,13 +81,17 @@ public class ExerciseService {
         return yearlySummary;
     }
 
-//    @Transactional(readOnly = true)
-//    public List<ExerciseDto> getAllExerciseData(Long memberId) {
-//        List<Exercise> exercises = exerciseRepository.findByMemberId(memberId);
-//        ExerciseSummaryDto summaryDto = new ExerciseSummaryDto();
-//        for (Exercise exercise : exercises) {
-//            ExerciseDto exerciseDto = ExerciseDto.of(exercise);
-//            summaryDto = ExerciseSummaryDto.merge(summaryDto, exerciseDto.toSummaryDto());
-//        }
-//    }
+    @Transactional(readOnly = true)
+    public ExerciseSummaryDto getAllExerciseData(Long memberId) {
+        List<Exercise> exercises = exerciseRepository.findByMemberId(memberId);
+
+        ExerciseSummaryDto summaryDto = new ExerciseSummaryDto();
+        for (Exercise exercise : exercises) {
+            ExerciseDto exerciseDto = ExerciseDto.of(exercise);
+            summaryDto = ExerciseSummaryDto.merge(summaryDto, exerciseDto.toSummaryDto());
+        }
+
+        return summaryDto;
+    }
+
 }

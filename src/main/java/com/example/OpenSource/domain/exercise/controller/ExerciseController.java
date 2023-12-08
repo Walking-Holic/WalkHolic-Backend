@@ -54,9 +54,9 @@ public class ExerciseController {
                 exerciseService.getYearlyExerciseData(SecurityUtil.getCurrentMemberId(), year));
     }
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<ExerciseDto>> getAllExerciseData() {
-//        return ResponseEntity.ok(
-//                exerciseService.getAllExerciseData(SecurityUtil.getCurrentMemberId()));
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<ExerciseSummaryDto> getAllExerciseData() {
+        return ResponseEntity.ok(
+                exerciseService.getAllExerciseData(SecurityUtil.getCurrentMemberId()));
+    }
 }
