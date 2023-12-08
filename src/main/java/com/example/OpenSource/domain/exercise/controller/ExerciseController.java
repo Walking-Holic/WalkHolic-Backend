@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +42,12 @@ public class ExerciseController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) int month) {
         return ResponseEntity.ok(
                 exerciseService.getMonthlyExerciseData(SecurityUtil.getCurrentMemberId(), year, month));
+    }
+
+    @GetMapping("/yearly/{year}")
+    public ResponseEntity<List<ExerciseDto>> getYearlyExerciseData(
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) int year) {
+        return ResponseEntity.ok(
+                exerciseService.getYearlyExerciseData(SecurityUtil.getCurrentMemberId(), year));
     }
 }

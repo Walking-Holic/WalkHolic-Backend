@@ -9,4 +9,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
     List<Exercise> findByMemberIdAndDateBetween(Long memberId, LocalDate startDate, LocalDate endDate);
 
     Exercise findByMemberIdAndDate(Long memberId, LocalDate exerciseDate);
+
 }

@@ -6,10 +6,12 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ExerciseDto {
     private LocalDate date;
     private int steps;
@@ -36,4 +38,6 @@ public class ExerciseDto {
                 .member(member)
                 .build();
     }
+
+
 }
