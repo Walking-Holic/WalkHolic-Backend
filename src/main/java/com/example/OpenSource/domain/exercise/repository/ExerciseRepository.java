@@ -10,4 +10,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     Exercise findByMemberIdAndDate(Long memberId, LocalDate exerciseDate);
 
+    List<Exercise> findByMemberId(Long memberId);
 }

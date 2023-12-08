@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -39,5 +41,13 @@ public class ExerciseDto {
                 .build();
     }
 
+    public ExerciseSummaryDto toSummaryDto() {
+        ExerciseSummaryDto summaryDto = new ExerciseSummaryDto();
+        summaryDto.setSteps(this.steps);
+        summaryDto.setDurationMinutes(this.durationMinutes);
+        summaryDto.setCaloriesBurned(this.caloriesBurned);
+        // 다른 필요한 필드들도 추가
 
+        return summaryDto;
+    }
 }

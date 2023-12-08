@@ -2,9 +2,12 @@ package com.example.OpenSource.domain.exercise.controller;
 
 import com.example.OpenSource.domain.auth.util.SecurityUtil;
 import com.example.OpenSource.domain.exercise.dto.ExerciseDto;
+import com.example.OpenSource.domain.exercise.dto.ExerciseSummaryDto;
 import com.example.OpenSource.domain.exercise.service.ExerciseService;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +48,15 @@ public class ExerciseController {
     }
 
     @GetMapping("/yearly/{year}")
-    public ResponseEntity<List<ExerciseDto>> getYearlyExerciseData(
+    public ResponseEntity<Map<YearMonth, ExerciseSummaryDto>> getYearlyExerciseData(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) int year) {
         return ResponseEntity.ok(
                 exerciseService.getYearlyExerciseData(SecurityUtil.getCurrentMemberId(), year));
     }
+
+//    @GetMapping("/all")
+//    public ResponseEntity<List<ExerciseDto>> getAllExerciseData() {
+//        return ResponseEntity.ok(
+//                exerciseService.getAllExerciseData(SecurityUtil.getCurrentMemberId()));
+//    }
 }
