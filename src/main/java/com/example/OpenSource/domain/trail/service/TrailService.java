@@ -17,8 +17,10 @@ import com.example.OpenSource.global.error.CustomException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +63,20 @@ public class TrailService {
 
         trails = queryTail.getResultList();
 
+        // 중복 위도 경도 제거 및 가장 빠른 ID의 trail만 선택
+        Map<String, Trail> uniqueCoordinatesToTrail = new HashMap<>();
         for (Trail trail : trails) {
+            String coordinatesKey = trail.getCoursSpotLa() + "," + trail.getCoursSpotLo();
+
+            // 중복된 좌표가 이미 추가되었는지 확인하고, 가장 빠른 ID를 가진 trail로 갱신
+            if (!uniqueCoordinatesToTrail.containsKey(coordinatesKey) ||
+                    trail.getId() < uniqueCoordinatesToTrail.get(coordinatesKey).getId()) {
+                uniqueCoordinatesToTrail.put(coordinatesKey, trail);
+            }
+        }
+
+        // 선택된 trails를 dtos에 추가
+        for (Trail trail : uniqueCoordinatesToTrail.values()) {
             TrailMainResponseDto response = Optional.of(trail)
                     .map(t -> new TrailMainResponseDto(trail))
                     .orElseThrow(() -> new CustomException(MISMATCH_DTO));
