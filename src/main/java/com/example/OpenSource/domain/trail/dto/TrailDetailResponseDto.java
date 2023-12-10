@@ -22,6 +22,8 @@ public class TrailDetailResponseDto {
     private String toiletDc;
     private String cvntlNm;
     private String lnmAddr;
+    private double averageScore;
+    private int commentCount;
     private List<PathCommentResponseDto> comments;
 
     public TrailDetailResponseDto(Trail trail, List<PathCommentResponseDto> comments) {
@@ -38,6 +40,8 @@ public class TrailDetailResponseDto {
         this.toiletDc = trail.getToiletDc();
         this.cvntlNm = trail.getCvntlNm();
         this.lnmAddr = trail.getLnmAddr();
+        this.averageScore = trail.getAverageScore();
+        this.commentCount = trail.getComments().size();
         this.comments = comments;
     }
 }
