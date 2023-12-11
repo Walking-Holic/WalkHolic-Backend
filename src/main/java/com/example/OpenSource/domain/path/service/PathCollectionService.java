@@ -13,7 +13,6 @@ import com.example.OpenSource.global.error.CustomException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,7 +55,7 @@ public class PathCollectionService {
     public List<PathAllResponseDto> getMemberCollections(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Set<Path> paths = member.getCollectedPaths();
+        List<Path> paths = member.getCollectedPaths();
         List<PathAllResponseDto> pathAllDtos = new ArrayList<>();
         log.info(String.valueOf(paths.size()));
         for (Path path : paths) {

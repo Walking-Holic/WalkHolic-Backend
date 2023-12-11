@@ -154,6 +154,7 @@ public class PathService {
         checkMemberOwner(oldPath.getMember(), memberId);
 
         member.removePaths(oldPath);
+        member.getCollectedPaths().remove(oldPath);
 
         pathRepository.delete(oldPath);
         return true;

@@ -23,9 +23,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Blob;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -75,13 +73,13 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "collection",
             joinColumns = @JoinColumn(name = "path_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
-    private Set<Path> pathCollections = new HashSet<>();
+    private List<Path> pathCollections = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Exercise> exerciseDataList = new ArrayList<>();
@@ -145,7 +143,7 @@ public class Member {
         this.pathCollections.remove(path);
     }
 
-    public Set<Path> getCollectedPaths() {
+    public List<Path> getCollectedPaths() {
         return pathCollections;
     }
 
