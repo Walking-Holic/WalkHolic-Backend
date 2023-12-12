@@ -19,6 +19,7 @@ import com.example.OpenSource.domain.path.dto.PathRequestDto;
 import com.example.OpenSource.domain.path.repository.CoordinateRepository;
 import com.example.OpenSource.domain.path.repository.PathRepository;
 import com.example.OpenSource.global.error.CustomException;
+import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -41,6 +42,7 @@ public class PathService {
     private final MemberRepository memberRepository;
     private final CoordinateRepository coordinateRepository;
     private final CommentRepository commentRepository;
+    private final EntityManager em;
 
     @Transactional
     public Boolean addPath(PathRequestDto pathRequestDto, Long memberId, MultipartFile pathImage) {
