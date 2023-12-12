@@ -16,6 +16,9 @@ import com.example.OpenSource.domain.auth.dto.TokenRequestDto;
 import com.example.OpenSource.domain.auth.dto.UpdateRequestDto;
 import com.example.OpenSource.domain.auth.jwt.TokenProvider;
 import com.example.OpenSource.domain.auth.repository.RefreshTokenRepository;
+import com.example.OpenSource.domain.comment.entity.Comment;
+import com.example.OpenSource.domain.comment.repository.CommentRepository;
+import com.example.OpenSource.domain.comment.service.CommentService;
 import com.example.OpenSource.domain.member.domain.Member;
 import com.example.OpenSource.domain.member.repository.MemberRepository;
 import com.example.OpenSource.global.error.CustomException;
@@ -23,6 +26,7 @@ import com.example.OpenSource.global.error.ErrorCode;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
 import javax.sql.rowset.serial.SerialBlob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +47,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Transactional
     public boolean register(RegisterRequestDto registerRequestDto, MultipartFile profileImage) {
@@ -158,9 +164,20 @@ public class AuthService {
     public void deleteMember(Long memberId) {
         Member oldMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        List<Comment> memberComments = commentRepository.findByMemberId(memberId);
 
         checkMemberOwner(oldMember, memberId);
 
         memberRepository.delete(oldMember);
+
+        for (Comment comment : memberComments) {
+            if (comment.getPath() != null) {
+                comment.getPath().removeComments(comment);
+                commentService.updateAverageScoreComment(comment.getPath());
+            } else if (comment.getTrail() != null) {
+                comment.getTrail().removeComments(comment);
+                commentService.updateAverageScoreComment(comment.getTrail());
+            }
+        }
     }
 }
