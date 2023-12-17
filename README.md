@@ -5,6 +5,7 @@
 
 **잠깐 시간 될까 - Walk Holic**은 `Spring Boot`와  `Flutter`를 사용해서 크로스 플랫폼으로 현재 위치 기반으로 주변 산책로 정보를 제공하고, 사용자 경로 공유 커뮤니티와 같은 여러 편의 기능을 제공해주는 오픈 API 활용 프로젝트입니다.
 
+[<img src="https://github.com/Walking-Holic/WalkHolic-Backend/assets/96743351/fe6b1f01-3562-411e-aaf7-7a80d676f2b9" width="100">](https://github.com/Walking-Holic/WalkHolic-Backend)
 [<img src="https://github.com/Walking-Holic/WalkHolic-Backend/assets/96743351/2250266d-15d3-4e19-8140-65fd2af1c6b1" width="100">](https://github.com/Walking-Holic/WalkHolic_Flutter)
 
 --------
